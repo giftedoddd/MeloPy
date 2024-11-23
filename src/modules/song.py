@@ -23,7 +23,6 @@ class Song:
     def __repr__(self):
         return f"Album:{self.album} Artist:{self.artist} Title:{self.title}"
 
-    # TODO: STILL HAS PROBLEM WITH SOME KIND OF FORMATS, NEED ANOTHER LOOKUP!
     def get_track_info(self):
         try:
             def extract_info(file_format, file):

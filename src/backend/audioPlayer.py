@@ -13,24 +13,20 @@ class AudioPlayer:
         self.audio_data = None
         self.tmp_data = None
 
-    # TODO:OK
     def is_playing(self):
         return self.playing
 
-    # TODO: NOT USING THIS DYNAMICALLY PLAYER NEED TO STOPPED TO CHANGE THE PLAYBACK SPEED!
     def set_playback_speed(self, playback_speed):
         if 0 < playback_speed < 5:
             self.playback_speed = playback_speed
             return
         print("Not valid playback speed!")
 
-    #TODO: NOT USED YET
     def get_remaining(self):
         total = self.remaining / self.samplerate
         minutes = int(total // 60)
         seconds = int(total % 60)
 
-    # TODO:NEED TO BE MORE INFORMATIVE ABOUT EXCEPTION AND HANDLE IT BETTER
     def set_audio_file(self, song):
         if self.playing:
             self.stop()
@@ -42,7 +38,6 @@ class AudioPlayer:
         except Exception as e:
             raise ValueError(f"Error loading audio file: {e}")
 
-    # TODO:OK
     def callback(self, out_data, frames, time_, status):
         if self.position < len(self.audio_data):
             self.remaining = len(self.audio_data) - self.position
@@ -54,7 +49,6 @@ class AudioPlayer:
         else:
             out_data[:frames, :] = 0
 
-    # TODO:COULD BE BETTER, NEED ANOTHER POLISH!
     def run(self):
         self.playing = True
         block_size = 1024
@@ -64,13 +58,12 @@ class AudioPlayer:
             while self.position < len(self.audio_data) and self.playing:
                 time.sleep(0.1)
 
-    # TODO:OK
     def stop(self):
         if self.playing:
             self.playing = False
             self.position = 0
 
-    # TODO:OK
+
     def pause(self):
         if self.playing:
             self.playing = False

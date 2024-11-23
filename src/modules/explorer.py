@@ -1,39 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 import pathlib
-import time
 import re
 import os
-#
-# def execute_workers(file_path):
-#     paths = []
-#     def get_files(path_):
-#         directories = os.scandir(path_)
-#         with PARENT_PATH.joinpath("db/.paths").open("a") as paths_db:
-#             for directory in directories:
-#                 if directory.is_dir():
-#                     get_files(directory)
-#                     continue
-#                 if bool(re.search(PATTERN, directory.path, re.IGNORECASE)):
-#                     paths.append(directory.path)
-#                     paths_db.write(directory.path + "\n")
-#
-#     with ThreadPoolExecutor() as exe:
-#         exe.submit(get_files, file_path)
-#     return paths
-#
-# def watch_dog(file_paths):
-#     for path in file_paths:
-#         try:
-#             with PARENT_PATH.joinpath("db/.stat").open("r") as file_stat:
-#                 modify_time = file_stat.read()
-#         except FileNotFoundError:
-#             with PARENT_PATH.joinpath("db/.stat").open("w") as file_stat:
-#                 modify_time = pathlib.Path(path).stat().st_mtime
-#                 file_stat.write(str(modify_time))
-#             return execute_workers(file_paths)
-#         if modify_time == pathlib.Path(path).stat().st_mtime:
-#             with PARENT_PATH.joinpath("db/.paths").open("r") as paths_db:
-#                 return paths_db.read()
 
 PATTERN = r"\.(flac|wav|mp3|opus|ogg|m4a|aac|wma)$"
 PARENT_PATH = pathlib.Path(__file__).parent.parent.parent

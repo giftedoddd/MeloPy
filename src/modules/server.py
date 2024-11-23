@@ -8,7 +8,7 @@ class Server:
         self.command = None
         self.lock = Lock()
         self.condition = Condition(self.lock)
-    # TODO:OK
+
     def start_server(self):
         with so.socket(so.AF_INET, so.SOCK_STREAM) as socket:
             socket.bind((self.ip, self.port))
@@ -17,7 +17,6 @@ class Server:
                 client_socket, address = socket.accept()
                 self.handle_client(client_socket)
 
-    # TODO:OK
     def handle_client(self, client_socket):
         with client_socket:
             while True:
@@ -28,7 +27,6 @@ class Server:
                     self.command = command
                     self.condition.notify_all()
 
-    # TODO:NAILED IT
     def get_command(self):
         with self.condition:
             while self.command is None:

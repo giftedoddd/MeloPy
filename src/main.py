@@ -7,7 +7,7 @@ import threading
 
 def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Server):
     while True:
-        command = host_.get_command() # TODO:OK
+        command = host_.get_command()
         match command:
             case "play":
                 print("playing: " + playlist_.play().artist + " " + playlist_.play().title)
