@@ -45,7 +45,6 @@ def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Serv
             case _:
                 pass
 
-    # TODO:NEED ANOTHER WAY TO START BACKEND LIKE SUBPROCESS
 if __name__ == '__main__':
     file_paths = explorer.watch_dog("/home/giftedodd/Music")
 
