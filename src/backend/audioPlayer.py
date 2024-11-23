@@ -20,7 +20,6 @@ class AudioPlayer:
         if 0 < playback_speed < 5:
             self.playback_speed = playback_speed
             return
-        print("Not valid playback speed!")
 
     def get_remaining(self):
         total = self.remaining / self.samplerate

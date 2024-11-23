@@ -1,3 +1,5 @@
+import pathlib
+
 from mutagen.flac import FLAC
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
@@ -117,5 +119,6 @@ class Song:
                     self.album = wma_audio_file.tags.get("WM/AlbumTitle", [None])[0]
                     self.date = wma_audio_file.tags.get("WM/Year", [None])[0]
                     self.genre = wma_audio_file.tags.get("WM/Genre", [None])[0]
-        except Exception:
+        except Exception as e:
+            print(e)
             return Song
