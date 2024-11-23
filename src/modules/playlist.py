@@ -1,6 +1,7 @@
 import random as rd
 
 class Playlist:
+
     def __init__(self):
         self.songs = []
         self.current_index = 0

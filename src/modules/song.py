@@ -1,5 +1,3 @@
-import pathlib
-
 from mutagen.flac import FLAC
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
