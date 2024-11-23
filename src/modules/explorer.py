@@ -5,7 +5,7 @@ PATTERN = r"\.(flac|wav|mp3|opus|ogg|m4a|aac|wma)$"
 PARENT_PATH = pathlib.Path(__file__).parent.parent.parent
 
 def watch_dog(dir_path:str) -> list:
-    """Takes a directory path as argument that contains audio files and checks if there is any filesystem changes.if it
+    """Gets a directory path as argument that contains audio files and checks if there is any filesystem changes.if it
     does not detect any modification since last run, simply read paths from database by calling get_files function for
     faster loading speed otherwise, it with call get_files function to rewrite database again."""
 
@@ -27,14 +27,15 @@ def watch_dog(dir_path:str) -> list:
         return get_files(dir_path=dir_path, condition=False)
 
 def get_files(dir_path:str, condition:bool) -> list:
-    """Takes a directory path and boolean condition to choose to read from database or read files and rewrite database.
+    """Gets a directory path and boolean condition to choose to read from database or read files and rewrite database.
     the writing process uses threading pool to read from files and write to database as fast as possible.
     reading process simply just read from database and return a list that contains abs_path of founded audio files"""
 
     db_path = PARENT_PATH.joinpath("db/.path")
     paths_list = []
 
-    def execute_workers(path):
+    def execute_workers(path) -> None:
+        """Recursive multithreaded deep file scanning function"""
         directories = os.scandir(path)
         with db_path.open("a") as paths_db:
             for directory in directories:

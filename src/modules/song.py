@@ -5,11 +5,11 @@ from mutagen.oggvorbis import OggVorbis
 from mutagen.oggopus import OggOpus
 from mutagen.asf import ASF
 from mutagen.wave import WAVE
-import mutagen
-import os
+import mutagen, os
 
 class Song:
-    def __init__(self, file_path):
+    """Song class to use in memory database instead of traditional databases"""
+    def __init__(self, file_path:str):
         self.file_path = file_path
         self.album = None
         self.artist = None
@@ -23,9 +23,10 @@ class Song:
     def __repr__(self):
         return f"Album:{self.album} Artist:{self.artist} Title:{self.title}"
 
-    def get_track_info(self):
+    def get_track_info(self) -> object:
+        """Detection and classification of each audio file to take informative datas out."""
         try:
-            def extract_info(file_format, file):
+            def extract_info(file_format:str, file:mutagen) -> None:
                 if file_format == "aac" or file_format == "m4a":
                     self.artist = file.tags.get("\xa9ART", [None])[0]
                     self.title = file.tags.get("\xa9nam", [None])[0]

@@ -1,8 +1,9 @@
-import time
 import sounddevice as sd
 import soundfile as sf
+import time
 
 class AudioPlayer:
+    """AudioPlayer class that handles buffering,audio data chunks and audio output stream controls."""
     def __init__(self, playback_speed=1.0):
         self.playback_speed = playback_speed
         self.position = 0
@@ -13,20 +14,27 @@ class AudioPlayer:
         self.audio_data = None
         self.tmp_data = None
 
-    def is_playing(self):
+    def is_playing(self) -> bool:
+        """Returns current state of output stream."""
         return self.playing
 
-    def set_playback_speed(self, playback_speed):
+    def set_playback_speed(self, playback_speed) -> None:
+        """Set playback speed."""
         if 0 < playback_speed < 5:
             self.playback_speed = playback_speed
             return
 
-    def get_remaining(self):
-        total = self.remaining / self.samplerate
-        minutes = int(total // 60)
-        seconds = int(total % 60)
+    def get_remaining(self) -> str:
+        """Returns remaining time of audio."""
+        if self.playing:
+            total = self.remaining / self.samplerate
+            minutes = int(total // 60)
+            seconds = int(total % 60)
+            return f"{minutes}:{seconds}"
+        return "00:00"
 
-    def set_audio_file(self, song):
+    def set_audio_file(self, song) -> None:
+        """Gets a Song object to gets the audio datas and prepare for play."""
         if self.playing:
             self.stop()
         try:
@@ -37,7 +45,8 @@ class AudioPlayer:
         except Exception as e:
             raise ValueError(f"Error loading audio file: {e}")
 
-    def callback(self, out_data, frames, time_, status):
+    def callback(self, out_data, frames, time_, status) -> None:
+        """Handles positioning and separates audio datas."""
         if self.position < len(self.audio_data):
             self.remaining = len(self.audio_data) - self.position
             current_block = min(self.remaining, frames)
@@ -49,6 +58,7 @@ class AudioPlayer:
             out_data[:frames, :] = 0
 
     def run(self):
+        """Runs the output stream and sleeps every 0.1 secs to let the thread look for if there is any other commands to do."""
         self.playing = True
         block_size = 1024
 
@@ -58,11 +68,13 @@ class AudioPlayer:
                 time.sleep(0.1)
 
     def stop(self):
+        """Stops output stream and restore the position. """
         if self.playing:
             self.playing = False
             self.position = 0
 
 
     def pause(self):
+        """Stops output stream without restoring the position"""
         if self.playing:
             self.playing = False
