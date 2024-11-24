@@ -7,11 +7,12 @@ import threading
 
 def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Server):
     while True:
-        command = host_.get_command()
+        command = input("next?")
         match command:
             case "play":
-                print("playing: " + playlist_.play().artist + " " + playlist_.play().title)
-                audioplayer_.set_audio_file(playlist_.play())
+                current = playlist_.play()
+                print(f"Playing {current}")
+                audioplayer_.set_audio_file(current)
                 threading.Thread(target=audioplayer_.run).start()
 
             case "stop":
@@ -29,13 +30,13 @@ def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Serv
             case "next":
                 audioplayer_.stop()
                 audioplayer_.set_audio_file(playlist_.next())
-                print("playing: " + playlist_.play().artist + " " + playlist_.play().title)
+                print(f"Playing {playlist_.play()}")
                 threading.Thread(target=audioplayer_.run).start()
 
             case "previous":
                 audioplayer_.stop()
                 audioplayer_.set_audio_file(playlist_.previous())
-                print("playing: " + playlist_.play().artist + " " + playlist_.play().title)
+                print(f"Playing {playlist_.play()}")
                 threading.Thread(target=audioplayer_.run).start()
 
             case "shuffle":
@@ -46,7 +47,7 @@ def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Serv
                 pass
 
 if __name__ == '__main__':
-    file_paths = explorer.watch_dog("")
+    file_paths = explorer.watch_dog("/home/giftedodd/Music")
 
     audioplayer = AudioPlayer()
     playlist = Playlist()

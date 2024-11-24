@@ -57,7 +57,7 @@ class AudioPlayer:
         else:
             out_data[:frames, :] = 0
 
-    def run(self):
+    def run(self) -> None:
         """Runs the output stream and sleeps every 0.1 secs to let the thread look for if there is any other commands to do."""
         self.playing = True
         block_size = 1024
@@ -67,14 +67,14 @@ class AudioPlayer:
             while self.position < len(self.audio_data) and self.playing:
                 time.sleep(0.1)
 
-    def stop(self):
+    def stop(self) -> None:
         """Stops output stream and restore the position. """
         if self.playing:
             self.playing = False
             self.position = 0
 
 
-    def pause(self):
+    def pause(self) -> None:
         """Stops output stream without restoring the position"""
         if self.playing:
             self.playing = False
