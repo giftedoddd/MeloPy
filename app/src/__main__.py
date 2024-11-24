@@ -1,7 +1,7 @@
-from backend.audioPlayer import AudioPlayer
-from modules.playlist import Playlist
-from modules.server import Server
-from modules.song import Song
+from models.audioPlayer import AudioPlayer
+from models.playlist import Playlist
+from models.server import Server
+from models.song import Song
 from modules import explorer
 import threading
 
@@ -54,7 +54,7 @@ def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Serv
                 pass
 
 if __name__ == '__main__':
-    file_paths = explorer.watch_dog("")
+    file_paths = explorer.watch_dog("/home/giftedodd/Music/Imagine Dragon - Hits")
 
     audioplayer = AudioPlayer()
     playlist = Playlist()
@@ -62,8 +62,8 @@ if __name__ == '__main__':
 
     for path in file_paths:
         song = Song(path)
-        playlist.add_song(song)
-    print(playlist.songs)
+        if not song:
+            playlist.add_song(song)
 
     threading.Thread(target=process_commands, args=(audioplayer, playlist, host)).start()
     threading.Thread(target=host.start_server).start()

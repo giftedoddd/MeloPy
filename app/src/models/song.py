@@ -121,7 +121,7 @@ class Song:
         except AttributeError:
             self.set_default_data()
         except Exception:
-            pass
+            return False
 
     def set_default_data(self):
         self.title = os.path.basename(self.file_path).split(".")[0]
