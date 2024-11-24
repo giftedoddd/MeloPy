@@ -54,7 +54,7 @@ def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Serv
                 pass
 
 if __name__ == '__main__':
-    file_paths = explorer.watch_dog("/home/giftedodd/Music/Fadaei-adl")
+    file_paths = explorer.watch_dog("")
 
     audioplayer = AudioPlayer()
     playlist = Playlist()
@@ -63,6 +63,7 @@ if __name__ == '__main__':
     for path in file_paths:
         song = Song(path)
         playlist.add_song(song)
+    print(playlist.songs)
 
     threading.Thread(target=process_commands, args=(audioplayer, playlist, host)).start()
     threading.Thread(target=host.start_server).start()

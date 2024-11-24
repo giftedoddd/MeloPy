@@ -23,7 +23,7 @@ class Song:
     def __repr__(self):
         return f"Album:{self.album} Artist:{self.artist} Title:{self.title}"
 
-    def get_track_info(self) -> object:
+    def get_track_info(self):
         """Detection and classification of each audio file to take informative datas out."""
         try:
             def extract_info(file_format:str, file:mutagen) -> None:
@@ -118,6 +118,10 @@ class Song:
                     self.album = wma_audio_file.tags.get("WM/AlbumTitle", [None])[0]
                     self.date = wma_audio_file.tags.get("WM/Year", [None])[0]
                     self.genre = wma_audio_file.tags.get("WM/Genre", [None])[0]
-        except Exception as e:
-            print(e)
-            return Song
+        except AttributeError:
+            self.set_default_data()
+        except Exception:
+            pass
+
+    def set_default_data(self):
+        self.title = os.path.basename(self.file_path).split(".")[0]
