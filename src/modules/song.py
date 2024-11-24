@@ -1,10 +1,10 @@
+from mutagen.oggvorbis import OggVorbis
+from mutagen.oggopus import OggOpus
+from mutagen.wave import WAVE
 from mutagen.flac import FLAC
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
-from mutagen.oggvorbis import OggVorbis
-from mutagen.oggopus import OggOpus
 from mutagen.asf import ASF
-from mutagen.wave import WAVE
 import mutagen, os
 
 class Song:

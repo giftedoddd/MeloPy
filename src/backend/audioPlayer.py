@@ -24,14 +24,15 @@ class AudioPlayer:
             self.playback_speed = playback_speed
             return
 
-    def get_remaining(self) -> str:
+    def get_remaining(self) -> int:
         """Returns remaining time of audio."""
+        time.sleep(2)
         if self.playing:
-            total = self.remaining / self.samplerate
-            minutes = int(total // 60)
-            seconds = int(total % 60)
-            return f"{minutes}:{seconds}"
-        return "00:00"
+            try:
+                total = self.remaining // self.samplerate
+            except TypeError:
+                total = 0
+            return total
 
     def set_audio_file(self, song) -> None:
         """Gets a Song object to gets the audio datas and prepare for play."""
@@ -66,6 +67,7 @@ class AudioPlayer:
                              callback=self.callback, latency='low'):
             while self.position < len(self.audio_data) and self.playing:
                 time.sleep(0.1)
+
 
     def stop(self) -> None:
         """Stops output stream and restore the position. """

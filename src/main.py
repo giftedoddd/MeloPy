@@ -6,8 +6,15 @@ from modules import explorer
 import threading
 
 def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Server):
+    def get_remaining():
+        while True:
+            remaining = audioplayer_.get_remaining()
+            if remaining == 1:
+                host_.set_tmp_command("next")
+
     while True:
-        command = input("next?")
+        threading.Thread(target=get_remaining).start()
+        command = host_.get_command()
         match command:
             case "play":
                 current = playlist_.play()
@@ -47,7 +54,7 @@ def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Serv
                 pass
 
 if __name__ == '__main__':
-    file_paths = explorer.watch_dog("/home/giftedodd/Music")
+    file_paths = explorer.watch_dog("/home/giftedodd/Music/Fadaei-adl")
 
     audioplayer = AudioPlayer()
     playlist = Playlist()

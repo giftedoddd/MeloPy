@@ -12,6 +12,9 @@ def watch_dog(dir_path:str) -> list:
     db_path = PARENT_PATH.joinpath("db/.stat")
     modify_date = pathlib.Path(dir_path).stat().st_mtime
 
+    if not PARENT_PATH.joinpath("db").exists():
+        PARENT_PATH.joinpath("db").mkdir()
+
     try:
 
         with db_path.open("r") as stat_file:

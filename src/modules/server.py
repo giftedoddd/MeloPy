@@ -38,3 +38,9 @@ class Server:
             command = self.command
             self.command = None
         return command
+
+    def set_tmp_command(self, command:str) -> None:
+        """Used to play next song after finishing current one."""
+        with self.lock:
+            self.command = command
+            self.condition.notify_all()
