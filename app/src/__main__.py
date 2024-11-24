@@ -54,7 +54,7 @@ def process_commands(audioplayer_ :AudioPlayer, playlist_: Playlist, host_ :Serv
                 pass
 
 if __name__ == '__main__':
-    file_paths = explorer.watch_dog("/home/giftedodd/Music/Imagine Dragon - Hits")
+    file_paths = explorer.watch_dog("")
 
     audioplayer = AudioPlayer()
     playlist = Playlist()
