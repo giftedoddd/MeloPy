@@ -24,7 +24,5 @@ class Logging:
             formatter = logging.Formatter("%(name)s - %(asctime)s - %(threadName)s - %(funcName)s\n%(message)s")
 
             logger.addHandler(file_handler)
-            logger.tt
 
-l = Logging()
 
