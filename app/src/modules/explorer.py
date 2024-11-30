@@ -57,4 +57,3 @@ def get_files(dir_path:str, condition:bool) -> list:
         return paths_list
     with db_path.open("r") as paths_file:
         return [path.replace("\n", "") for path in paths_file.readlines()]
-

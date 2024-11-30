@@ -3,29 +3,44 @@ import soundfile as sf
 import time
 
 class AudioPlayer:
-    """AudioPlayer class that handles buffering,audio data chunks and audio output stream controls."""
+    """
+    AudioPlayer class to handle audiodata, buffering and playback.
+    """
     def __init__(self, playback_speed=1.0):
-        self.playback_speed = playback_speed
-        self.position = 0
-        self.playing = False
-        self.remaining = None
-        self.samplerate = None
-        self.channels = None
-        self.audio_data = None
-        self.tmp_data = None
+        self.playback_speed = playback_speed        # Playback speed default=1.0.
+        self.position = 0                           # Stores current position.
+        self.playing = False                        # Boolean variable for playing state.
+        self.remaining = None                       # Remaining time.
+        self.samplerate = None                      # Stores Audiodata samplerate.
+        self.channels = None                        # Stores channels.
+        self.audio_data = None                      # Stores Audiodata.
+        self.tmp_data = None                        # Temporary audiodata.
 
-    def is_playing(self) -> bool:
-        """Returns current state of output stream."""
+    def playing(self) -> bool:
+        """
+        Returns current state of output stream.\n
+        Args:none
+        Returns:boolean
+        """
         return self.playing
 
-    def set_playback_speed(self, playback_speed) -> None:
-        """Set playback speed."""
+    def set_playback_speed(self, playback_speed: float) -> None:
+        """
+        Sets playback speed.\n
+        Args:float
+        Returns:none
+        """
+
         if 0 < playback_speed < 5:
             self.playback_speed = playback_speed
             return
 
     def get_remaining(self) -> int:
-        """Returns remaining time of audio."""
+        """
+        Returns remaining time of audiodata in seconds.\n
+        Args: none
+        Returns: int
+        """
         time.sleep(2)
         if self.playing:
             try:
@@ -35,7 +50,11 @@ class AudioPlayer:
             return total
 
     def set_audio_file(self, song) -> None:
-        """Gets a Song object to gets the audio datas and prepare for play."""
+        """
+        Gets a song path and extracts the audiodata, samplerate, channel.\n
+        Args: str
+        Returns: none
+        """
         if self.playing:
             self.stop()
         try:
@@ -47,7 +66,11 @@ class AudioPlayer:
             raise ValueError(f"Error loading audio file: {e}")
 
     def callback(self, out_data, frames, time_, status) -> None:
-        """Handles positioning and separates audio datas."""
+        """
+        Handles positioning and remaining data.\n
+        Args: none
+        Returns: none
+        """
         if self.position < len(self.audio_data):
             self.remaining = len(self.audio_data) - self.position
             current_block = min(self.remaining, frames)
@@ -59,7 +82,11 @@ class AudioPlayer:
             out_data[:frames, :] = 0
 
     def run(self) -> None:
-        """Runs the output stream and sleeps every 0.1 secs to let the thread look for if there is any other commands to do."""
+        """
+        Runs the output stream and sleeps every 0.1 secs to let the thread look for if there is any other commands to do.\n
+        Args: none
+        Returns: none
+        """
         self.playing = True
         block_size = 1024
 
@@ -70,13 +97,21 @@ class AudioPlayer:
 
 
     def stop(self) -> None:
-        """Stops output stream and restore the position. """
+        """
+        Stops output stream and restore the position.\n
+        Args: none
+        Returns: none
+        """
         if self.playing:
             self.playing = False
             self.position = 0
 
 
     def pause(self) -> None:
-        """Stops output stream without restoring the position"""
+        """
+        Stops output stream without restoring the position.\n
+        Args: none
+        Returns: none
+        """
         if self.playing:
             self.playing = False
