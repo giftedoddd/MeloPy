@@ -7,14 +7,13 @@ class AudioPlayer:
     AudioPlayer class to handle audiodata, buffering and playback.
     """
     def __init__(self, playback_speed=1.0):
-        self.playback_speed = playback_speed        # Playback speed default=1.0.
-        self.position = 0                           # Stores current position.
-        self.playing = False                        # Boolean variable for playing state.
-        self.remaining = None                       # Remaining time.
-        self.samplerate = None                      # Stores Audiodata samplerate.
-        self.channels = None                        # Stores channels.
-        self.audio_data = None                      # Stores Audiodata.
-        self.tmp_data = None                        # Temporary audiodata.
+        self.__playback_speed = playback_speed        # Playback speed default=1.0.
+        self.__position = 0                           # Stores current position.
+        self.__playing = False                        # Boolean variable for playing state.
+        self.__remaining = None                       # Remaining time.
+        self.__samplerate = None                      # Stores Audiodata samplerate.
+        self.__channels = None                        # Stores channels.
+        self.__audio_data = None                      # Stores Audiodata.
 
     def playing(self) -> bool:
         """
@@ -22,7 +21,7 @@ class AudioPlayer:
         Args:none
         Returns:boolean
         """
-        return self.playing
+        return self.__playing
 
     def set_playback_speed(self, playback_speed: float) -> None:
         """
@@ -30,10 +29,8 @@ class AudioPlayer:
         Args:float
         Returns:none
         """
-
         if 0 < playback_speed < 5:
-            self.playback_speed = playback_speed
-            return
+            self.__playback_speed = playback_speed
 
     def get_remaining(self) -> int:
         """
@@ -44,12 +41,12 @@ class AudioPlayer:
         time.sleep(2)
         if self.playing:
             try:
-                total = self.remaining // self.samplerate
+                total = self.__remaining // self.__samplerate
             except TypeError:
                 total = 0
             return total
 
-    def set_audio_file(self, song) -> None:
+    def set_audio_file(self, song_path) -> None:
         """
         Gets a song path and extracts the audiodata, samplerate, channel.\n
         Args: str
@@ -58,25 +55,24 @@ class AudioPlayer:
         if self.playing:
             self.stop()
         try:
-            self.audio_data, self.samplerate = sf.read(song.file_path, dtype='float64')
-            self.channels = self.audio_data.shape[1] if self.audio_data.ndim > 1 else 1
-            self.position = 0
-            self.tmp_data = self.audio_data
+            self.__audio_data, self.__samplerate = sf.read(song_path.file_path, dtype='float64')
+            self.__channels = self.__audio_data.shape[1] if self.__audio_data.ndim > 1 else 1
+            self.__position = 0
         except Exception as e:
             raise ValueError(f"Error loading audio file: {e}")
 
-    def callback(self, out_data, frames, time_, status) -> None:
+    def __callback(self, out_data, frames, time_, status) -> None:
         """
         Handles positioning and remaining data.\n
         Args: none
         Returns: none
         """
-        if self.position < len(self.audio_data):
-            self.remaining = len(self.audio_data) - self.position
-            current_block = min(self.remaining, frames)
+        if self.__position < len(self.__audio_data):
+            self.__remaining = len(self.__audio_data) - self.__position
+            current_block = min(self.__remaining, frames)
 
-            out_data[:current_block, :] = self.tmp_data[self.position:self.position + current_block, :]
-            self.position += current_block
+            out_data[:current_block, :] = self.__audio_data[self.__position:self.__position + current_block, :]
+            self.__position += current_block
 
         else:
             out_data[:frames, :] = 0
@@ -87,12 +83,12 @@ class AudioPlayer:
         Args: none
         Returns: none
         """
-        self.playing = True
+        self.__playing = True
         block_size = 1024
 
-        with sd.OutputStream(samplerate=self.samplerate * self.playback_speed, channels=self.channels, blocksize=block_size,
-                             callback=self.callback, latency='low'):
-            while self.position < len(self.audio_data) and self.playing:
+        with sd.OutputStream(samplerate=self.__samplerate * self.__playback_speed, channels=self.__channels, blocksize=block_size,
+                             callback=self.__callback, latency='low'):
+            while self.__position < len(self.__audio_data) and self.__playing:
                 time.sleep(0.1)
 
 
@@ -102,9 +98,9 @@ class AudioPlayer:
         Args: none
         Returns: none
         """
-        if self.playing:
-            self.playing = False
-            self.position = 0
+        if self.__playing:
+            self.__playing = False
+            self.__position = 0
 
 
     def pause(self) -> None:
@@ -113,5 +109,5 @@ class AudioPlayer:
         Args: none
         Returns: none
         """
-        if self.playing:
-            self.playing = False
+        if self.__playing:
+            self.__playing = False
