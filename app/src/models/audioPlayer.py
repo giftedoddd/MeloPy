@@ -15,52 +15,6 @@ class AudioPlayer:
         self.__channels = None                        # Stores channels.
         self.__audio_data = None                      # Stores Audiodata.
 
-    def playing(self) -> bool:
-        """
-        Returns current state of output stream.\n
-        Args:none
-        Returns:boolean
-        """
-        return self.__playing
-
-    def set_playback_speed(self, playback_speed: float) -> None:
-        """
-        Sets playback speed.\n
-        Args:float
-        Returns:none
-        """
-        if 0 < playback_speed < 5:
-            self.__playback_speed = playback_speed
-
-    def get_remaining(self) -> int:
-        """
-        Returns remaining time of audiodata in seconds.\n
-        Args: none
-        Returns: int
-        """
-        time.sleep(2)
-        if self.playing:
-            try:
-                total = self.__remaining // self.__samplerate
-            except TypeError:
-                total = 0
-            return total
-
-    def set_audio_file(self, song_path) -> None:
-        """
-        Gets a song path and extracts the audiodata, samplerate, channel.\n
-        Args: str
-        Returns: none
-        """
-        if self.playing:
-            self.stop()
-        try:
-            self.__audio_data, self.__samplerate = sf.read(song_path.file_path, dtype='float64')
-            self.__channels = self.__audio_data.shape[1] if self.__audio_data.ndim > 1 else 1
-            self.__position = 0
-        except Exception as e:
-            raise ValueError(f"Error loading audio file: {e}")
-
     def __callback(self, out_data, frames, time_, status) -> None:
         """
         Handles positioning and remaining data.\n
@@ -90,6 +44,52 @@ class AudioPlayer:
                              callback=self.__callback, latency='low'):
             while self.__position < len(self.__audio_data) and self.__playing:
                 time.sleep(0.1)
+
+    def set_audio_file(self, song_path) -> None:
+        """
+        Gets a song path and extracts the audiodata, samplerate, channel.\n
+        Args: str
+        Returns: none
+        """
+        if self.playing:
+            self.stop()
+        try:
+            self.__audio_data, self.__samplerate = sf.read(song_path.file_path, dtype='float64')
+            self.__channels = self.__audio_data.shape[1] if self.__audio_data.ndim > 1 else 1
+            self.__position = 0
+        except Exception as e:
+            raise ValueError(f"Error loading audio file: {e}")
+
+    def set_playback_speed(self, playback_speed: float) -> None:
+        """
+        Sets playback speed.\n
+        Args:float
+        Returns:none
+        """
+        if 0 < playback_speed < 5:
+            self.__playback_speed = playback_speed
+
+    def get_remaining(self) -> int:
+        """
+        Returns remaining time of audiodata in seconds.\n
+        Args: none
+        Returns: int
+        """
+        time.sleep(2)
+        if self.playing:
+            try:
+                total = self.__remaining // self.__samplerate
+            except TypeError:
+                total = 0
+            return total
+
+    def playing(self) -> bool:
+        """
+        Returns current state of output stream.\n
+        Args:none
+        Returns:boolean
+        """
+        return self.__playing
 
 
     def stop(self) -> None:
