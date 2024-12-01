@@ -68,14 +68,41 @@ class Server:
     def run(self):
         self.__set_ip()
 
-        if not self.__default_interface:
-            Thread(target=self.__broadcast,
-                   daemon=True).start()
-
-
-
         with so.socket(so.AF_INET, so.SOCK_STREAM) as socket:
             socket.setsockopt(so.SOL_SOCKET, so.SO_REUSEADDR, 1)
             socket.setsockopt(so.SOL_SOCKET, so.SO_REUSEPORT, 1)
             socket.bind((self.__ip, self.__port))
             socket.listen()
+
+        if not self.__default_interface:
+            Thread(target=self.__broadcast,
+                   daemon=True).start()
+
+        while not self.__found:
+            client_socket, client_address = socket.accept()
+            self.__interfaces[client_address] = client_socket
+
+            Thread(target=self.__handle_client,
+                   args=(client_socket, client_address),
+                   name=f"{client_address[0]}:{client_address[1]}",
+                   daemon=True
+                   ).start()
+
+            self.__found = True
+
+    def receive_data(self):
+        with self.__condition:
+            while self.__received_data is None:
+                self.__condition.wait()
+            received = self.__received_data
+            self.__received_data = None
+        return received
+
+    def send_data(self, client_socket:so.socket, to_address, message):
+        client_socket.sendto(message.encode("utf-8"),
+                             (to_address[0], to_address[1])
+                             )
+
+    def close(self):
+        for socket in self.__interfaces.values():
+            socket.close()
