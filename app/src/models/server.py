@@ -12,7 +12,7 @@ class Server:
         self.__lock = Lock()                        # For Thread synchronizing.
         self.__condition = Condition(self.__lock)   # For Thread synchronizing.
         self.__interfaces = {}                      # A dictionary to keep sockets objects and their addresses.
-        self.__default_interface = True             # State which interface program is gonna uses.
+        self.__default_interface = False             # State which interface program is gonna uses.
         self.__found = False                        # A boolean variable to not broadcast everytime.
         self.__received_data = None                 # Stores received data from client
 
@@ -56,6 +56,7 @@ class Server:
             try:
                 broadcaster.setsockopt(so.SOL_SOCKET, so.SO_REUSEADDR, 1)
                 broadcaster.setsockopt(so.SOL_SOCKET, so.SO_REUSEPORT, 1)
+                broadcaster.setsockopt(so.SOL_SOCKET, so.SO_BROADCAST, 1)
                 broadcaster.bind(("", 12345))
 
                 while not self.__found:
@@ -88,27 +89,27 @@ class Server:
         """
         self.__set_ip()
 
-        with so.socket(so.AF_INET, so.SOCK_STREAM) as socket:
-            socket.setsockopt(so.SOL_SOCKET, so.SO_REUSEADDR, 1)
-            socket.setsockopt(so.SOL_SOCKET, so.SO_REUSEPORT, 1)
-            socket.bind((self.__ip, self.__port))
-            socket.listen()
+        with so.socket(so.AF_INET, so.SOCK_STREAM) as host_socket:
+            host_socket.setsockopt(so.SOL_SOCKET, so.SO_REUSEADDR, 1)
+            host_socket.setsockopt(so.SOL_SOCKET, so.SO_REUSEPORT, 1)
+            host_socket.bind((self.__ip, self.__port))
+            host_socket.listen()
 
-        if not self.__default_interface:
-            Thread(target=self.__broadcast,
-                   daemon=True).start()
+            if not self.__default_interface:
+                Thread(target=self.__broadcast,
+                       daemon=True).start()
 
-        while not self.__found:
-            client_socket, client_address = socket.accept()
-            self.__interfaces[client_address] = client_socket
+            while not self.__found:
+                client_socket, client_address = host_socket.accept()
+                self.__interfaces[client_address] = client_socket
 
-            Thread(target=self.__handle_client,
-                   args=(client_socket, client_address),
-                   name=f"{client_address[0]}:{client_address[1]}",
-                   daemon=True
-                   ).start()
+                Thread(target=self.__handle_client,
+                       args=(client_socket, client_address),
+                       name=f"{client_address[0]}:{client_address[1]}",
+                       daemon=True
+                       ).start()
 
-            self.__found = True
+                self.__found = True
 
     def receive_data(self):
         """
