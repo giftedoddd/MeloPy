@@ -12,7 +12,7 @@ class Server:
         self.__lock = Lock()                        # For Thread synchronizing.
         self.__condition = Condition(self.__lock)   # For Thread synchronizing.
         self.__interfaces = {}                      # A dictionary to keep sockets objects and their addresses.
-        self.__default_interface = False             # State which interface program is gonna uses.
+        self.__default_interface = True             # State which interface program is gonna uses.
         self.__found = False                        # A boolean variable to not broadcast everytime.
         self.__received_data = None                 # Stores received data from client
 
@@ -44,7 +44,7 @@ class Server:
         except Exception as e:
             print(e)
 
-    def __broadcast(self):
+    def broadcast(self):
         """
         Sends a broadcast message to local network every 5 seconds.\n
         Args: none
@@ -61,7 +61,7 @@ class Server:
 
                 while not self.__found:
                     broadcaster.sendto(message, ("255.255.255.255", 12345))
-                    time.sleep(5)
+                    time.sleep(2)
 
             except Exception as e:
                 print(e)
