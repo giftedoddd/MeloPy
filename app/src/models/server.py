@@ -7,14 +7,14 @@ class Server:
     Server based communication with available interfaces.
     """
     def __init__(self, port=9353, ip="127.0.0.1"):
-        self.__ip = ip
-        self.__port = port
-        self.__lock = Lock()
-        self.__condition = Condition(self.__lock)
-        self.__interfaces = {}
-        self.__default_interface = True
-        self.__found = False
-        self.__received_data = None
+        self.__ip = ip                              # Host's ip address.
+        self.__port = port                          # Host's port address.
+        self.__lock = Lock()                        # For Thread synchronizing.
+        self.__condition = Condition(self.__lock)   # For Thread synchronizing.
+        self.__interfaces = {}                      # A dictionary to keep sockets objects and their addresses.
+        self.__default_interface = True             # State which interface program is gonna uses.
+        self.__found = False                        # A boolean variable to not broadcast everytime.
+        self.__received_data = None                 # Stores received data from client
 
     def __len__(self):
         return len(self.__interfaces)
@@ -23,6 +23,11 @@ class Server:
         return f"Server running at {self.__ip}:{self.__ip}"
 
     def __set_ip(self):
+        """
+        Sets host's ip address.\n
+        Args: none
+        Returns: none
+        """
         if self.__default_interface:
             return
 
@@ -33,13 +38,18 @@ class Server:
                 ip = connection.getsockname()
                 if ip[0].startswith("127"):
                     return "127.0.0.1"
-                return ip[0]
+                self.__ip = ip[0]
         except OSError as e:
             print(e)
         except Exception as e:
             print(e)
 
     def __broadcast(self):
+        """
+        Sends a broadcast message to local network every 5 seconds.\n
+        Args: none
+        Returns: none
+        """
         message = f"\"MeloPy\" UI join at: {self.__ip}:{self.__port}".encode("utf-8")
 
         with so.socket(so.AF_INET, so.SOCK_DGRAM) as broadcaster:
@@ -56,6 +66,11 @@ class Server:
                 print(e)
 
     def __handle_client(self, client_socket, client_address):
+        """
+        Handles communication between host and client.\n
+        Args: socket object, client ip address and port
+        Returns: none
+        """
         with client_socket:
             while True:
                 received_data = client_socket.recv(1024).decode("utf-8")
@@ -66,6 +81,11 @@ class Server:
                     self.__condition.notify_all()
 
     def run(self):
+        """
+        Starts the server and accepts requests.\n
+        Args: none
+        Returns: none
+        """
         self.__set_ip()
 
         with so.socket(so.AF_INET, so.SOCK_STREAM) as socket:
@@ -91,6 +111,11 @@ class Server:
             self.__found = True
 
     def receive_data(self):
+        """
+        Waits till receives data from client.\n
+        Args: none
+        Returns: str
+        """
         with self.__condition:
             while self.__received_data is None:
                 self.__condition.wait()
@@ -98,11 +123,21 @@ class Server:
             self.__received_data = None
         return received
 
-    def send_data(self, client_socket:so.socket, to_address, message):
+    def send_data(self, client_socket, to_address, message):
+        """
+        Send data to client or any other address provided.
+        Args: socket object, (ip address, port), message
+        Returns: none
+        """
         client_socket.sendto(message.encode("utf-8"),
                              (to_address[0], to_address[1])
                              )
 
     def close(self):
+        """
+        Closes all available connections.
+        Args: none
+        Returns: none
+        """
         for socket in self.__interfaces.values():
             socket.close()
