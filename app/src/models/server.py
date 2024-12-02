@@ -42,7 +42,7 @@ class Server:
 
     def __broadcast(self):
         """
-        Sends a broadcast message to local network every 5 seconds.\n
+        Sends a broadcast message to local network every 2 seconds.\n
         Args: none
         Returns: none
         """
