@@ -12,7 +12,6 @@ class Server:
         self.__lock = Lock()                        # For Thread synchronizing.
         self.__condition = Condition(self.__lock)   # For Thread synchronizing.
         self.__interfaces = {}                      # A dictionary to keep sockets objects and their addresses.
-        self.__default_interface = True             # State which interface program is gonna uses.
         self.__found = False                        # A boolean variable to not broadcast everytime.
         self.__received_data = None                 # Stores received data from client
 
@@ -28,9 +27,6 @@ class Server:
         Args: none
         Returns: none
         """
-        if self.__default_interface:
-            return
-
         try:
             with so.socket(so.AF_INET, so.SOCK_DGRAM) as connection:
                 connection.settimeout(2)
@@ -38,13 +34,13 @@ class Server:
                 ip = connection.getsockname()
                 if ip[0].startswith("127"):
                     return "127.0.0.1"
-                self.__ip = ip[0]
+                return ip[0]
         except OSError as e:
             print(e)
         except Exception as e:
             print(e)
 
-    def broadcast(self):
+    def __broadcast(self):
         """
         Sends a broadcast message to local network every 5 seconds.\n
         Args: none
@@ -87,17 +83,11 @@ class Server:
         Args: none
         Returns: none
         """
-        self.__set_ip()
-
         with so.socket(so.AF_INET, so.SOCK_STREAM) as host_socket:
             host_socket.setsockopt(so.SOL_SOCKET, so.SO_REUSEADDR, 1)
             host_socket.setsockopt(so.SOL_SOCKET, so.SO_REUSEPORT, 1)
             host_socket.bind((self.__ip, self.__port))
             host_socket.listen()
-
-            if not self.__default_interface:
-                Thread(target=self.__broadcast,
-                       daemon=True).start()
 
             while not self.__found:
                 client_socket, client_address = host_socket.accept()
@@ -109,7 +99,19 @@ class Server:
                        daemon=True
                        ).start()
 
-                self.__found = True
+                if self.__found is False:
+                    self.__found = True
+
+    def add_interface(self):
+        self.__ip = self.__set_ip()
+
+        if self.__found is True:
+            self.__found = False
+
+        Thread(target=self.__broadcast,
+               daemon=True).start()
+
+        self.run()
 
     def receive_data(self):
         """
@@ -140,5 +142,6 @@ class Server:
         Args: none
         Returns: none
         """
-        for socket in self.__interfaces.values():
-            socket.close()
+        if self.__interfaces:
+            for socket in self.__interfaces.values():
+                socket.close()

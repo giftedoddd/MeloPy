@@ -8,7 +8,6 @@ class Client:
         self.__port = port
         self.__lock = Lock()
         self.__condition = Condition(self.__lock)
-        self.__default_interface = True
         self.__found_host = False
         self.__received_data = None
         self.__client_socket = None
@@ -35,7 +34,7 @@ class Client:
                     return
 
                 message = finder.recv(512)
-                self.__message_parser(message.decode("utf-8"))
+                self.__ip, self.__port = self.__message_parser(message.decode("utf-8"))
                 timeout -= 1
                 time.sleep(1)
 
@@ -46,13 +45,16 @@ class Client:
             self.__found_host = True
             return ip, port
 
-    def run(self):
-        if not self.__default_interface:
-            broadcast_thread = Thread(target=self.__find_host,
-                                      daemon=True)
-            broadcast_thread.start()
-            broadcast_thread.join()
+    def add_host(self):
+        if self.__found_host is True:
+            self.__found_host = False
 
+        broadcast_thread = Thread(target=self.__find_host,
+                                  daemon=True)
+        broadcast_thread.start()
+        broadcast_thread.join()
+
+    def run(self):
         self.__connect_to_host()
 
     def send_data(self, data):
@@ -71,4 +73,5 @@ class Client:
         return received
 
     def close(self):
-        self.__client_socket.close()
+        if self.__client_socket is not None:
+            self.__client_socket.close()
