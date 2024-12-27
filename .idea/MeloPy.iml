@@ -4,8 +4,8 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/httpRequests" />
-      <excludeFolder url="file://$MODULE_DIR$/app/db" />
-      <excludeFolder url="file://$MODULE_DIR$/app/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/MeloPy/db" />
+      <excludeFolder url="file://$MODULE_DIR$/MeloPy/logs" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (MeloPy)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
