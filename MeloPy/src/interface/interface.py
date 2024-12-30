@@ -36,7 +36,7 @@ class Interface(Tk):
 
         image_path = ASSETS_PATH.joinpath("lana.jpg").open("rb")
         image = PIL.Image.open(image_path)
-        image = image.resize((125, 125))
+        image = image.resize((150, 150))
         self.static_modules.append(ImageTk.PhotoImage(image))
 
         singer_icon = ASSETS_PATH.joinpath("singer-25.png")
@@ -64,31 +64,31 @@ class Interface(Tk):
         next_button.place(relx=0.51, rely=0.6)
 
         artist_image = Label(master=frame, image=self.static_modules[3])
-        artist_image.place(relx=0.004, rely=0.35)
+        artist_image.place(relx=0.004, rely=0.25)
 
-        singer_name = Label(master=frame, text="Lana Del Rey", font=("Arial", 15), background=background,
+        singer_name = Label(master=frame, text="Lana Del Rey", font=("Arial", 17), background=background,
                             foreground=FOREGROUND)
-        singer_name.place(relx=0.065, rely=0.35)
+        singer_name.place(relx=0.075, rely=0.28)
 
         singer_image = Label(master=frame, image=self.static_modules[4], background=background)
-        singer_image.place(relx=0.053, rely=0.39)
+        singer_image.place(relx=0.063, rely=0.31)
 
-        album_name = Label(master=frame, text="Lust For Life", font=("Arial", 15), background=background, foreground=FOREGROUND)
-        album_name.place(relx=0.065, rely=0.55)
+        album_name = Label(master=frame, text="Lust For Life", font=("Arial", 17), background=background, foreground=FOREGROUND)
+        album_name.place(relx=0.075, rely=0.51)
 
         album_image = Label(master=frame, image=self.static_modules[5], background=background)
-        album_image.place(relx=0.053, rely=0.58)
+        album_image.place(relx=0.063, rely=0.55)
 
-        song_name = Label(master=frame, text="Ultraviolence", font=("Arial", 15), background=background,
+        song_name = Label(master=frame, text="Ultraviolence", font=("Arial", 17), background=background,
                           foreground=FOREGROUND)
-        song_name.place(relx=0.065, rely=0.75)
+        song_name.place(relx=0.075, rely=0.73)
 
         song_image = Label(master=frame, image=self.static_modules[6], background=background)
-        song_image.place(relx=0.053, rely=0.77)
+        song_image.place(relx=0.063, rely=0.76)
 
-        self.slider = Scale(master=frame, border=5, orient=HORIZONTAL, from_=1, to=500, cursor="arrow", sliderrelief=FLAT,
-                            background=background, highlightthickness=False, relief=FLAT, sliderlength=1, length=self.max_width - 40,
-                            width=20)
-        self.slider.place(relx=0.004, rely=0.0)
+        self.slider = Scale(master=frame, border=5, orient=HORIZONTAL, from_=0, to=100, cursor="arrow", sliderrelief=FLAT,
+                            background=background, highlightthickness=False, relief=FLAT, sliderlength=10,
+                            length=self.max_width - 30, width=20, foreground=FOREGROUND, borderwidth=0, showvalue=False)
+        self.slider.place(relx=0.004, rely=0.1)
 
         self.lower_modules.append(frame)
