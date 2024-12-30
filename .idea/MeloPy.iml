@@ -6,6 +6,8 @@
       <excludeFolder url="file://$MODULE_DIR$/.idea/httpRequests" />
       <excludeFolder url="file://$MODULE_DIR$/MeloPy/db" />
       <excludeFolder url="file://$MODULE_DIR$/MeloPy/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/.ignore" />
+      <excludeFolder url="file://$MODULE_DIR$/MeloPy/assets/test" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (MeloPy)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
