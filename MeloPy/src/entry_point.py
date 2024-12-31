@@ -1,5 +1,4 @@
-from interface.interface import Interface
+from interface.app import App
 
-root = Interface()
-
-root.mainloop()
+app = App()
+app.mainloop()
